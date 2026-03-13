@@ -41,7 +41,7 @@ const schema = z
       .min(0)
       .max(50)
       .optional(),
-    bio: z.string().max(500).optional().or(z.literal(""run)),
+    bio: z.string().max(500).optional().or(z.literal("")),
     profileImageUrl: z
       .string()
       .url("Must be a valid URL")

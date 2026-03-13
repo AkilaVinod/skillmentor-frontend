@@ -18,43 +18,42 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { CheckCircle, AlertCircle, Users, BadgeCheck } from "lucide-react";
 
-const schema = z.object({
-  firstName: z
-    .string()
-    .min(1, "First name is required")
-    .max(100),
-  lastName: z
-    .string()
-    .min(1, "Last name is required")
-    .max(100),
-  email: z.string().email("Must be a valid email"),
-  phoneNumber: z.string().max(20).optional().or(z.literal("")),
-  title: z.string().max(100).optional().or(z.literal("")),
-  profession: z.string().max(100).optional().or(z.literal("")),
-  company: z.string().max(100).optional().or(z.literal("")),
-  experienceYears: z
-    .number({ invalid_type_error: "Must be a number" })
-    .min(0)
-    .max(50)
-    .optional(),
-  bio: z.string().max(500).optional().or(z.literal("")),
-  profileImageUrl: z
-    .string()
-    .url("Must be a valid URL")
-    .optional()
-    .or(z.literal("")),
-  isCertified: z.boolean().optional(),
-  startYear: z.string().max(10).optional().or(z.literal("")),
-}).refine(
-  (values) => !values.startYear || /^\d{4}$/.test(values.startYear),
-  {
+const schema = z
+  .object({
+    firstName: z.string().min(1, "First name is required").max(100),
+    lastName: z.string().min(1, "Last name is required").max(100),
+    email: z.string().email("Must be a valid email"),
+    phoneNumber: z.string().max(20).optional().or(z.literal("")),
+    title: z.string().max(100).optional().or(z.literal("")),
+    profession: z.string().max(100).optional().or(z.literal("")),
+    company: z.string().max(100).optional().or(z.literal("")),
+    experienceYears: z
+      .number({ message: "Must be a number" })
+      .min(0)
+      .max(50)
+      .optional(),
+    bio: z.string().max(500).optional().or(z.literal(""run)),
+    profileImageUrl: z
+      .string()
+      .url("Must be a valid URL")
+      .optional()
+      .or(z.literal("")),
+    isCertified: z.boolean().optional(),
+    startYear: z.string().max(10).optional().or(z.literal("")),
+  })
+  .refine((values) => !values.startYear || /^\d{4}$/.test(values.startYear), {
     message: "Start year must be a 4-digit year",
     path: ["startYear"],
-  }
-);
+  });
 
 type FormValues = z.infer<typeof schema>;
 
@@ -62,7 +61,8 @@ export default function CreateMentorPage() {
   const { getToken } = useAuth();
   const navigate = useNavigate();
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [createdMentor, setCreatedMentor] = useState<MentorProvisionResponse | null>(null);
+  const [createdMentor, setCreatedMentor] =
+    useState<MentorProvisionResponse | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -109,11 +109,13 @@ export default function CreateMentorPage() {
           isCertified: values.isCertified,
           startYear: values.startYear || undefined,
         },
-        token
+        token,
       );
       setCreatedMentor(mentor);
     } catch (err: unknown) {
-      setSubmitError(err instanceof Error ? err.message : "Failed to create mentor");
+      setSubmitError(
+        err instanceof Error ? err.message : "Failed to create mentor",
+      );
     }
   }
 
@@ -124,8 +126,8 @@ export default function CreateMentorPage() {
           <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">Mentor Created!</h2>
           <p className="text-muted-foreground">
-            {createdMentor.mentor.firstName} {createdMentor.mentor.lastName} has been added
-            as a mentor.
+            {createdMentor.mentor.firstName} {createdMentor.mentor.lastName} has
+            been added as a mentor.
           </p>
         </div>
         <Card>
@@ -139,23 +141,30 @@ export default function CreateMentorPage() {
                 />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                  {createdMentor.mentor.firstName?.[0]}{createdMentor.mentor.lastName?.[0]}
+                  {createdMentor.mentor.firstName?.[0]}
+                  {createdMentor.mentor.lastName?.[0]}
                 </div>
               )}
               <div>
                 <p className="font-semibold">
-                  {createdMentor.mentor.firstName} {createdMentor.mentor.lastName}
+                  {createdMentor.mentor.firstName}{" "}
+                  {createdMentor.mentor.lastName}
                 </p>
                 {createdMentor.mentor.title && (
-                  <p className="text-sm text-muted-foreground">{createdMentor.mentor.title}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {createdMentor.mentor.title}
+                  </p>
                 )}
-                <p className="text-sm text-muted-foreground">{createdMentor.mentor.email}</p>
+                <p className="text-sm text-muted-foreground">
+                  {createdMentor.mentor.email}
+                </p>
               </div>
             </div>
             <div className="rounded-lg border bg-muted/40 p-4 space-y-2">
               <p className="text-sm font-semibold">Mentor login credentials</p>
               <p className="text-sm text-muted-foreground">
-                Share these credentials securely. The temporary password is only shown once.
+                Share these credentials securely. The temporary password is only
+                shown once.
               </p>
               <div className="text-sm">
                 <span className="font-medium">Email:</span>{" "}
@@ -163,7 +172,9 @@ export default function CreateMentorPage() {
               </div>
               <div className="text-sm">
                 <span className="font-medium">Temporary password:</span>{" "}
-                <span className="font-mono">{createdMentor.temporaryPassword}</span>
+                <span className="font-mono">
+                  {createdMentor.temporaryPassword}
+                </span>
               </div>
               <div className="text-sm">
                 <span className="font-medium">Clerk user ID:</span>{" "}
@@ -175,12 +186,18 @@ export default function CreateMentorPage() {
         <div className="flex gap-3 mt-6">
           <Button
             variant="outline"
-            onClick={() => { setCreatedMentor(null); form.reset(); }}
+            onClick={() => {
+              setCreatedMentor(null);
+              form.reset();
+            }}
             className="flex-1"
           >
             Create Another
           </Button>
-          <Button onClick={() => navigate(`/mentors/${createdMentor.mentor.id}`)} className="flex-1">
+          <Button
+            onClick={() => navigate(`/mentors/${createdMentor.mentor.id}`)}
+            className="flex-1"
+          >
             View Profile
           </Button>
         </div>
@@ -195,7 +212,8 @@ export default function CreateMentorPage() {
         <div>
           <h1 className="text-2xl font-bold">Create Mentor</h1>
           <p className="text-muted-foreground text-sm">
-            Onboard a new mentor, create their Clerk login, and issue a temporary password
+            Onboard a new mentor, create their Clerk login, and issue a
+            temporary password
           </p>
         </div>
       </div>
@@ -347,7 +365,7 @@ export default function CreateMentorPage() {
                                 field.onChange(
                                   e.target.value
                                     ? Number(e.target.value)
-                                    : undefined
+                                    : undefined,
                                 )
                               }
                             />
@@ -363,7 +381,13 @@ export default function CreateMentorPage() {
                         <FormItem>
                           <FormLabel>Start Year</FormLabel>
                           <FormControl>
-                            <Input type="number" placeholder="2018" min="1900" max="2100" {...field} />
+                            <Input
+                              type="number"
+                              placeholder="2018"
+                              min="1900"
+                              max="2100"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -394,7 +418,9 @@ export default function CreateMentorPage() {
               {/* Media & Certification */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Media & Certification</CardTitle>
+                  <CardTitle className="text-base">
+                    Media & Certification
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <FormField
@@ -452,10 +478,7 @@ export default function CreateMentorPage() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={form.formState.isSubmitting}
-                >
+                <Button type="submit" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting
                     ? "Creating..."
                     : "Create Mentor"}
@@ -498,7 +521,9 @@ export default function CreateMentorPage() {
                     {watchFirstName || "First"} {watchLastName || "Last"}
                   </p>
                   {watchTitle && (
-                    <p className="text-xs text-muted-foreground">{watchTitle}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {watchTitle}
+                    </p>
                   )}
                 </div>
               </div>

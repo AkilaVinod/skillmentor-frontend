@@ -33,9 +33,8 @@ function useFetch<T>(url: string): UseFetchResult<T> {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [url]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchData(); }, [url]);
 
   return { data, loading, error, refetch: fetchData };
 }

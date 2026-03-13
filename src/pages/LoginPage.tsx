@@ -4,9 +4,9 @@ import { useNavigate, useSearchParams } from "react-router";
 
 export default function LoginPage() {
   const expectedPassword = "password123";
-  let [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  searchParams.get("error") && alert(searchParams.get("error")!);
+  if (searchParams.get("error")) alert(searchParams.get("error")!);
 
   const [userDetails, setUserDetails] = useState({
     username: "",

@@ -1,23 +1,15 @@
 import { Outlet } from "react-router";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import { useState } from "react";
-import { Button } from "./components/ui/button";
 
 export default function Layout() {
-  const [counter, setCounter] = useState(0);
-
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-
-      <p>Counter is: {counter}</p>
-      <Button onClick={() => setCounter((prev) => prev + 1)}>
-        Increment Counter
-      </Button>
-
-      <Outlet />
+      <main className="flex-1">
+        <Outlet />
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }
